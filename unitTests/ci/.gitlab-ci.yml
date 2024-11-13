@@ -1,0 +1,204 @@
+
+# Settings -----------------------------------------------
+
+# define variables
+variables:
+  DO_CI: "true"
+  # append commit message with '--ci-run-ext'
+  # append commit message with '--ci-run-merge'
+  # append commit message with '--ci-run-release'
+  # append commit message with '--ci-run-examples'
+  # append commit message with '--ci-run-benchmarks'
+
+# define base settings
+.base-image:
+  image:
+    name: tobiasladnertum/cora:r2023b
+    entrypoint: [""]
+  tags:
+    - matlab
+  rules:
+    - if: $DO_CI == "true"
+      when: always
+    - when: manual
+
+# define stages
+stages:
+  - init
+  - test-short
+  - test-extended
+  - test-examples
+  - test-benchmarks
+  - ci-status
+
+# Init stage ----------------------------------------------
+
+# define init settings
+.init:
+  stage: init
+  extends: .base-image
+  before_script: 
+    # tell bitbucket tests are running
+    - sudo chmod +x ./unitTests/ci/build_status 
+    - BUILD_STATUS="INPROGRESS" RESULT_TEXT="" ./unitTests/ci/build_status
+    # any non-zero exit code should fail the job
+    - set +e
+  after_script:
+    - BUILD_STATUS="0" RESULT_TEXT="Job finished." ./unitTests/ci/build_status
+
+# test job
+test-job:
+  extends: .init
+  rules:
+    - when: never
+  script: 
+    - matlab -batch "addpath(genpath('.')); testLong_zonotope_reduce"
+
+# Short test stage --------------------------------------------------------
+
+# define base run
+.base-run:
+  extends: .init
+  variables:
+    testSuite: 'short'
+  script: 
+    # reset CORA
+    - matlab -batch "addpath(genpath('.')); resetCORA();"
+
+    # run testSuite
+    - matlab -batch "addpath(genpath('.')); runTestSuite('$testSuite');"
+
+    # check test results
+    - matlab -batch "addpath(genpath('.')); writeTestResultsForCI('$testSuite');"
+
+    # push results to bitbucket
+    - BUILD_STATUS=$(<failed.txt) RESULT_TEXT=$(<resultText.txt) ./unitTests/ci/build_status
+    - rm resultText.txt
+
+    # reset CORA
+    - matlab -batch "addpath(genpath('.')); resetCORA();"
+    - if [ -d "./DLT_CustomLayers" ]; then rm -Rf ./DLT_CustomLayers; fi
+    
+    # exit with exit code
+    - EXIT_CODE=$(<failed.txt)
+    - rm failed.txt
+    - echo "Exiting with code $EXIT_CODE."
+    - exit $EXIT_CODE
+  after_script: # all done in script
+
+# run short tests
+runTestSuiteShort:
+  stage: test-short
+  extends: .base-run
+  variables:
+    testSuite: 'short'
+
+# Extended test stage -----------------------------------------------------
+
+# extends base run settings
+.base-run-ext:
+  stage: test-extended
+  extends: .base-run
+  rules: 
+    # run extended tests if commit message contains '--ci-run-ext' or always on specific branches
+    - if: $DO_CI == "true" && 
+            ($CI_COMMIT_MESSAGE =~ /^(.|\r|\n)*--ci-run-ext(.|\r|\n)*/
+                || $CI_COMMIT_MESSAGE =~ /^(.|\r|\n)*--ci-run-merge(.|\r|\n)*/
+                || $CI_COMMIT_MESSAGE =~ /^(.|\r|\n)*--ci-run-release(.|\r|\n)*/
+                || $CI_COMMIT_BRANCH == "PUBLIC" 
+                || $CI_COMMIT_BRANCH == "public-bugfix" 
+                || $CI_COMMIT_BRANCH == "devgeneral" 
+            )
+      when: always
+
+# run long duration tests
+runTestSuiteLong:
+  extends: .base-run-ext
+  variables:
+    testSuite: 'long'
+
+# run nn tests
+runTestSuiteNN:
+  extends: .base-run-ext
+  variables:
+    testSuite: 'nn'
+  rules: 
+    - !reference [.base-run-ext, rules]
+    # always run on 'nn-*' branches
+    - if: $DO_CI == "true" && $CI_COMMIT_BRANCH =~ "/^nn-.*/"
+      when: always
+
+# run flaky tests
+runTestSuiteFlaky:
+  extends: .base-run-ext
+  variables:
+    testSuite: 'flaky'
+
+# Examples test stage ---------------------------------------------------------
+
+# extends base run settings
+.base-run-examples:
+  stage: test-examples
+  extends: .base-run
+  timeout: 24h
+  rules: 
+    # run all tests if commit message contains '--ci-run-examples'
+    - if: $DO_CI == "true" && 
+            ($CI_COMMIT_MESSAGE =~ /^(.|\r|\n)*--ci-run-examples(.|\r|\n)*/
+                || $CI_COMMIT_MESSAGE =~ /^(.|\r|\n)*--ci-run-merge(.|\r|\n)*/
+                || $CI_COMMIT_MESSAGE =~ /^(.|\r|\n)*--ci-run-release(.|\r|\n)*/
+            )
+      when: always
+
+# run examples tests
+runTestSuiteExamples:
+  extends: .base-run-examples
+  variables:
+    testSuite: 'examples'
+
+# Benchmark test stage ---------------------------------------------------------
+
+# extends base run settings
+.base-run-benchmarks:
+  stage: test-benchmarks
+  extends: .base-run
+  timeout: 24h
+  rules: 
+    # run all tests if commit message contains '--ci-run-benchmarks'
+    - if: $DO_CI == "true" && 
+            ($CI_COMMIT_MESSAGE =~ /^(.|\r|\n)*--ci-run-benchmarks(.|\r|\n)*/
+                || $CI_COMMIT_MESSAGE =~ /^(.|\r|\n)*--ci-run-release(.|\r|\n)*/
+            )
+      when: always
+
+# run benchmarks tests
+runTestSuiteBenchmarks:
+  extends: .base-run-benchmarks
+  variables:
+    testSuite: 'benchmarks'
+
+# CI status block ---------------------------------------------------------
+
+failure:
+  stage: ci-status
+  extends: .base-image
+  script:
+    # tell bitbucket something went wrong
+    - sudo chmod +x ./unitTests/ci/build_status 
+    - BUILD_STATUS="FAILED" RESULT_TEXT="Something went wrong. Check gitlab for details." ./unitTests/ci/build_status
+    - exit 1 # always fail
+  rules:
+    - if: $DO_CI == "true"
+      when: on_failure # of any earlier job
+
+success:
+  stage: ci-status
+  extends: .base-image
+  script:
+    # tell bitbucket all tests passed
+    - sudo chmod +x ./unitTests/ci/build_status 
+    - BUILD_STATUS="0" RESULT_TEXT="All tests passed." ./unitTests/ci/build_status
+    - exit 0
+  rules:
+    - if: $DO_CI == "true"
+      when: on_success # of all jobs

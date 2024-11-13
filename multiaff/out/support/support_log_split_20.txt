@@ -1,0 +1,31 @@
+The optimal values of f* are: [-1.0248     0.91053      1.0408    -0.73214    -0.62005     -0.7879]
+Case for i = 1
+Start time of computing support for i = 1 direction == [0.0072583    -0.99997], with split num: 20 is: 15-Feb-2024 01:53:11
+End time of computing support for i = 1 direction == [0.0072583    -0.99997], with split num: 20 is: 15-Feb-2024 01:53:20
+Resulting support interval has inf: -1.3764 sup: -1.0212
+Resulting deviation is: 0.0035656
+Case for i = 2
+Start time of computing support for i = 2 direction == [-0.63784     0.77017], with split num: 20 is: 15-Feb-2024 01:53:20
+End time of computing support for i = 2 direction == [-0.63784     0.77017], with split num: 20 is: 15-Feb-2024 01:54:14
+Resulting support interval has inf: 0.64155 sup: 0.91547
+Resulting deviation is: 0.0054295
+Case for i = 3
+Start time of computing support for i = 3 direction == [0.80844     0.58858], with split num: 20 is: 15-Feb-2024 01:54:14
+End time of computing support for i = 3 direction == [0.80844     0.58858], with split num: 20 is: 15-Feb-2024 01:59:58
+Resulting support interval has inf: 0.73329 sup: 1.0459
+Resulting deviation is: 0.0048905
+Case for i = 4
+Start time of computing support for i = 4 direction == [-0.81442    -0.58027], with split num: 20 is: 15-Feb-2024 01:59:58
+End time of computing support for i = 4 direction == [-0.81442    -0.58027], with split num: 20 is: 15-Feb-2024 02:00:41
+Resulting support interval has inf: -1.0362 sup: -0.7257
+Resulting deviation is: 0.0088049
+Case for i = 5
+Start time of computing support for i = 5 direction == [0.65773    -0.75325], with split num: 20 is: 15-Feb-2024 02:00:41
+End time of computing support for i = 5 direction == [0.65773    -0.75325], with split num: 20 is: 15-Feb-2024 02:06:39
+Resulting support interval has inf: -0.89184 sup: -0.61561
+Resulting deviation is: 0.0071561
+Case for i = 6
+Start time of computing support for i = 6 direction == [-0.76664    -0.64207], with split num: 20 is: 15-Feb-2024 02:06:39
+End time of computing support for i = 6 direction == [-0.76664    -0.64207], with split num: 20 is: 15-Feb-2024 02:12:09
+Resulting support interval has inf: -1.107 sup: -0.78284
+Resulting deviation is: 0.0064173

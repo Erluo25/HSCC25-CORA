@@ -1,0 +1,4 @@
+The optimal values of f* are: [-1.0248     0.91053      1.0408    -0.73214    -0.62005     -0.7879]
+Case for i = 5
+Start time of computing support for i = 5 direction == [0.65773    -0.75325], with split num: 30 is: 15-Feb-2024 11:32:11
+Not able to finish running.

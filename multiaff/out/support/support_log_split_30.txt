@@ -1,0 +1,23 @@
+The optimal values of f* are: [-1.0248     0.91053      1.0408    -0.73214    -0.62005     -0.7879]
+Case for i = 1
+Start time of computing support for i = 1 direction == [0.0072583    -0.99997], with split num: 30 is: 15-Feb-2024 02:12:09
+End time of computing support for i = 1 direction == [0.0072583    -0.99997], with split num: 30 is: 15-Feb-2024 02:15:56
+Resulting support interval has inf: -1.3764 sup: -1.0214
+Resulting deviation is: 0.0033642
+Case for i = 2
+Start time of computing support for i = 2 direction == [-0.63784     0.77017], with split num: 30 is: 15-Feb-2024 02:15:56
+End time of computing support for i = 2 direction == [-0.63784     0.77017], with split num: 30 is: 15-Feb-2024 03:52:54
+Resulting support interval has inf: 0.64164 sup: 0.91523
+Resulting deviation is: 0.005161
+Case for i = 3
+Start time of computing support for i = 3 direction == [0.80844     0.58858], with split num: 30 is: 15-Feb-2024 03:52:54
+End time of computing support for i = 3 direction == [0.80844     0.58858], with split num: 30 is: 15-Feb-2024 04:44:21
+Resulting support interval has inf: 0.73442 sup: 1.0459
+Resulting deviation is: 0.0048837
+Case for i = 4
+Start time of computing support for i = 4 direction == [-0.81442    -0.58027], with split num: 30 is: 15-Feb-2024 04:44:21
+End time of computing support for i = 4 direction == [-0.81442    -0.58027], with split num: 30 is: 15-Feb-2024 05:03:37
+Resulting support interval has inf: -1.0362 sup: -0.72609
+Resulting deviation is: 0.0082625
+Case for i = 5
+Start time of computing support for i = 5 direction == [0.65773    -0.75325], with split num: 30 is: 15-Feb-2024 05:03:38

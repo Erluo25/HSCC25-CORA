@@ -1,0 +1,6 @@
+The optimal values of f* are: [-1.0248     0.91053      1.0408    -0.73214    -0.62005     -0.7879]
+Case for i = 6
+Start time of computing support for i = 6 direction == [-0.76664    -0.64207], with split num: 30 is: 15-Feb-2024 11:23:06
+End time of computing support for i = 6 direction == [-0.76664    -0.64207], with split num: 30 is: 15-Feb-2024 11:31:47
+Resulting support interval has inf: -1.107 sup: -0.78324
+Resulting deviation is: 0.0059105

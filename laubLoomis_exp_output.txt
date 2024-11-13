@@ -1,0 +1,14 @@
+time out is: 100 seconds
+Intersection checking cancelled for exp: 1, with time: 100.369 seconds, dir: [0 0 0 0 0 0 1] , b: 0.137, split num: 20
+Intersection checking completed for exp: 2, with time: 6.0387 seconds, with i: 108, with check result a: 1, dir: [0 0 0 0 0 0 1] , b: 0.137, split num: 2 
+Intersection checking completed for exp: 3, with time: 6.0417 seconds, with i: 108, with check result a: 1, dir: [0 0 0 0 0 0 1] , b: 0.137, split num: 2 
+Intersection checking cancelled for exp: 4, with time: 100.3908 seconds, dir: [0 0 0 0 1 0 0] , b: 0.0685, split num: 20
+Intersection checking completed for exp: 5, with time: 21.0904 seconds, with i: 485, with check result a: 1, dir: [0 0 0 0 1 0 0] , b: 0.0685, split num: 2 
+Intersection checking completed for exp: 6, with time: 20.0873 seconds, with i: 459, with check result a: 1, dir: [1 0 0 0 0 0 0] , b: 0.457, split num: 2 
+Intersection checking cancelled for exp: 7, with time: 100.3929 seconds, dir: [1 0 0 0 0 0 0] , b: 0.457, split num: 10
+Intersection checking completed for exp: 8, with time: 59.2004 seconds, with i: 42, with check result a: 1, dir: [0 -1 0 0 0 0 0] , b: -1.354, split num: 20 
+Intersection checking completed for exp: 9, with time: 1.0042 seconds, with i: 1, with check result a: 1, dir: [0 0 -1 0 0 0 0] , b: -1.6505, split num: 2 
+Intersection checking cancelled for exp: 10, with time: 100.395 seconds, dir: [0 0 -1 0 0 0 0] , b: -1.6505, split num: 20
+Intersection checking cancelled for exp: 11, with time: 100.4 seconds, dir: [0 0 0 0 0 1 0] , b: 0.045, split num: 20
+Intersection checking completed for exp: 12, with time: 26.0981 seconds, with i: 482, with check result a: 1, dir: [0 0 0 0 0 1 0] , b: 0.045, split num: 2 
+Intersection checking completed for exp: 13, with time: 19.0528 seconds, with i: 478, with check result a: 1, dir: [0 0 0 0 0 1 0] , b: 0.045, split num: 1 

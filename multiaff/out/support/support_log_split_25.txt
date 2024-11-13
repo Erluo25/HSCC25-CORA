@@ -1,0 +1,27 @@
+The optimal values of f* are: [-1.0248     0.91053      1.0408    -0.73214    -0.62005     -0.7879]
+Case for i = 1
+Start time of computing support for i = 1 direction == [0.0072583    -0.99997], with split num: 25 is: 15-Feb-2024 11:13:10
+End time of computing support for i = 1 direction == [0.0072583    -0.99997], with split num: 25 is: 15-Feb-2024 11:13:36
+Resulting support interval has inf: -1.3764 sup: -1.0213
+Resulting deviation is: 0.0034281
+Case for i = 2
+Start time of computing support for i = 2 direction == [-0.63784     0.77017], with split num: 25 is: 15-Feb-2024 11:13:36
+{Operation terminated by user during <a href="matlab:matlab.internal.language.introspective.errorDocCallback('withinTol')" style="font-weight:bold">withinTol</a>
+
+
+In <a href="matlab:matlab.internal.language.introspective.errorDocCallback('supportFuncSplit', '/Users/ertailuo/Research/CORA-2024/global/functions/helper/sets/contSet/polyZonotope/supportFuncSplit.m', 128)" style="font-weight:bold">supportFuncSplit</a> (<a href="matlab: opentoline('/Users/ertailuo/Research/CORA-2024/global/functions/helper/sets/contSet/polyZonotope/supportFuncSplit.m',128,0)">line 128</a>)
+                if withinTol(minMax_k, max_k)
+
+In <a href="matlab:matlab.internal.language.introspective.errorDocCallback('supportFuncSplit', '/Users/ertailuo/Research/CORA-2024/global/functions/helper/sets/contSet/polyZonotope/supportFuncSplit.m', 50)" style="font-weight:bold">supportFuncSplit</a> (<a href="matlab: opentoline('/Users/ertailuo/Research/CORA-2024/global/functions/helper/sets/contSet/polyZonotope/supportFuncSplit.m',50,0)">line 50</a>)
+   low = -supportFuncSplit(pZ,-dir,'upper',splits);
+
+In <a href="matlab:matlab.internal.language.introspective.errorDocCallback('polyZonotope/supportFunc_', '/Users/ertailuo/Research/CORA-2024/contSet/@polyZonotope/supportFunc_.m', 109)" style="font-weight:bold">polyZonotope/supportFunc_</a> (<a href="matlab: opentoline('/Users/ertailuo/Research/CORA-2024/contSet/@polyZonotope/supportFunc_.m',109,0)">line 109</a>)
+        val = supportFuncSplit(pZ,dir,type,splits);
+
+In <a href="matlab:matlab.internal.language.introspective.errorDocCallback('support_exp', '/Users/ertailuo/Research/CORA-2024/multiaff/support_exp.m', 68)" style="font-weight:bold">support_exp</a> (<a href="matlab: opentoline('/Users/ertailuo/Research/CORA-2024/multiaff/support_exp.m',68,0)">line 68</a>)
+    val = supportFunc_(pZ_set, dir, 'range', 'split', split_num);
+
+In <a href="matlab:matlab.internal.language.introspective.errorDocCallback('all_exp_script', '/Users/ertailuo/Research/CORA-2024/multiaff/all_exp_script.m', 4)" style="font-weight:bold">all_exp_script</a> (<a href="matlab: opentoline('/Users/ertailuo/Research/CORA-2024/multiaff/all_exp_script.m',4,0)">line 4</a>)
+support_exp(25, 1);
+} 
+all_exp_script
