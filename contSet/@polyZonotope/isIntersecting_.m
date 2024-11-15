@@ -1,4 +1,4 @@
-function res = isIntersecting_(pZ,S,type,splits,varargin)
+function [res, mem] = isIntersecting_(pZ,S,type,splits,varargin)
 % isIntersecting_ - determines if a polynomial zonotope intersects a set
 %
 % Syntax:
@@ -85,7 +85,7 @@ elseif isa(S,'halfspace') || isa(S,'conHyperplane') || ...
        isa(S,'conZonotope') || isa(S,'ellipsoid') || ...
        isa(S,'conPolyZono')
 
-    res = isIntersecting_(S,pZ,type,splits);
+    [res, mem] = isIntersecting_(S,pZ,type,splits);
 
 else
     

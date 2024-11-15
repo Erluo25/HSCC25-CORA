@@ -1,4 +1,4 @@
-function val = supportFuncSplit(pZ,dir,type, varargin)
+function [val, mem] = supportFuncSplit(pZ,dir,type, varargin)
 % supportFuncSplit - computes the support function of a (list of)
 %    polyZonotopes in the given direction
 %
@@ -40,14 +40,16 @@ inputArgsCheck({ ...
     {type,'str',{'lower','upper','range'}}; ...
     {splits, 'att', 'numeric', {'integer', 'positive'}}
 });
-
+mem = 0;
  % handle different types
 if strcmp(type,'lower')
-   val = -supportFuncSplit(pZ,-dir,'upper',splits);
+   [val, mem] = supportFuncSplit(pZ,-dir,'upper',splits);
+   val = -val;
    return;
 elseif strcmp(type,'range')
    up = supportFuncSplit(pZ,dir,'upper',splits);
-   low = -supportFuncSplit(pZ,-dir,'upper',splits);
+   [low, mem] = supportFuncSplit(pZ,-dir,'upper',splits);
+   low = -low;
    val = interval(low,up);
    return;
 end
@@ -96,7 +98,8 @@ for i = 0:splits
         
         for k = 1:length(res)
             res_k = res{k};
-            
+            mem = mem + (size(res_k.G,1) * size(res_k.G,2)) + (size(res_k.E,1) * size(res_k.E,2));
+
             % compute support function for enclosing zonotope
             [max_k,~,alpha] = supportFunc(zonotope(res_k),1);
             

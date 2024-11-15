@@ -1,0 +1,11 @@
+time out is: 900 seconds
+Intersection checking completed for exp: 1, with time: 499.3107 seconds, with i: 194, with check result a: 1, dir: [0 0 0 0 0 0 1] , b: 0.137, split num: 9 
+Intersection checking cancelled for exp: 2, with time: 900.008 seconds, dir: [0 0 0 0 0 0 1] , b: 0.137, split num: 10
+Intersection checking cancelled for exp: 3, with time: 900.0389 seconds, dir: [0 0 0 0 1 0 0] , b: 0.0685, split num: 6
+Intersection checking cancelled for exp: 4, with time: 900.0404 seconds, dir: [0 0 0 0 1 0 0] , b: 0.0685, split num: 7
+Intersection checking completed for exp: 5, with time: 733.8162 seconds, with i: 2000, with check result a: 0, dir: [1 0 0 0 0 0 0] , b: 0.457, split num: 5 
+Intersection checking cancelled for exp: 6, with time: 900.0387 seconds, dir: [1 0 0 0 0 0 0] , b: 0.457, split num: 6
+Intersection checking cancelled for exp: 7, with time: 900.0399 seconds, dir: [0 -1 0 0 0 0 0] , b: -1.354, split num: 25
+Intersection checking cancelled for exp: 8, with time: 900.0408 seconds, dir: [0 0 -1 0 0 0 0] , b: -1.6505, split num: 11
+Intersection checking cancelled for exp: 9, with time: 900.0498 seconds, dir: [0 0 0 0 0 1 0] , b: 0.045, split num: 7
+Intersection checking cancelled for exp: 10, with time: 900.0531 seconds, dir: [0 0 0 0 0 1 0] , b: 0.045, split num: 8

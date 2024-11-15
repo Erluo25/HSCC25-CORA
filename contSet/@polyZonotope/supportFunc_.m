@@ -1,4 +1,4 @@
-function val = supportFunc_(pZ,dir,type,method,maxOrderOrSplits,tol,varargin)
+function [val, mem] = supportFunc_(pZ,dir,type,method,maxOrderOrSplits,tol,varargin)
 % supportFunc_ - Calculates the upper or lower bound of a polynomial
 %    zonotope along a given direction
 %
@@ -106,8 +106,8 @@ function val = supportFunc_(pZ,dir,type,method,maxOrderOrSplits,tol,varargin)
         
     elseif strcmp(method,'split')
         
-        val = supportFuncSplit(pZ,dir,type,splits);
-
+        [val, mem] = supportFuncSplit(pZ,dir,type,splits);
+        
     % determine bounds with taylor models and "branch and bound" or
     % advanced "branch and bound"
     elseif strcmp(method,'bnb') || strcmp(method,'bnbAdv')

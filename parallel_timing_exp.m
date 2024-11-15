@@ -2,7 +2,7 @@
 diary('laubLoomis_exp_output.txt');
 
 % Define the timeout in seconds
-timeout = 100; % change this to your desired timeout duration
+timeout = 900; % change this to your desired timeout duration
 fprintf("time out is: %d seconds\n", timeout);
 % Start a parallel pool if not already started
 if isempty(gcp('nocreate'))
@@ -11,28 +11,28 @@ end
 
 % Set up the experiments
 dirs = {
-    [0, 0, 0, 0, 0, 0, 1]; [0, 0, 0, 0, 0, 0, 1]; [0, 0, 0, 0, 0, 0, 1];
+    [0, 0, 0, 0, 0, 0, 1]; [0, 0, 0, 0, 0, 0, 1];
     [0, 0, 0, 0, 1, 0, 0]; [0, 0, 0, 0, 1, 0, 0];
     [1, 0, 0, 0, 0, 0, 0]; [1, 0, 0, 0, 0, 0, 0];
     [0, -1, 0, 0, 0, 0, 0];
-    [0, 0, -1, 0, 0, 0, 0]; [0, 0, -1, 0, 0, 0, 0];
-    [0, 0, 0, 0, 0, 1, 0]; [0, 0, 0, 0, 0, 1, 0]; [0, 0, 0, 0, 0, 1, 0];
+    [0, 0, -1, 0, 0, 0, 0];
+    [0, 0, 0, 0, 0, 1, 0]; [0, 0, 0, 0, 0, 1, 0];
 };
 bs = {
-    0.137; 0.137; 0.137;
+    0.137; 0.137;
     0.0685; 0.0685;
     0.457; 0.457;
     -1.354;
-    -1.6505; -1.6505;
-    0.045; 0.045; 0.045;
+    -1.6505;
+    0.045; 0.045;
     };
 split_list = {
-    20; 2; 2;
-    20; 2;
-    2; 10;
-    20;
-    2; 20;
-    20; 2; 1;
+    9; 10;
+    6; 7;
+    5; 6;
+    25;
+    11;
+    7; 8;
 };
 assert((length(dirs) == length(bs)) && (length(bs) == length(split_list)), ...
     'invalid input lengths')

@@ -1,4 +1,4 @@
-function res = isIntersecting_(hs,S,type,splits,varargin)
+function [res, mem] = isIntersecting_(hs,S,type,splits,varargin)
 % isIntersecting_ - determines if a halfspace intersects a set
 %
 % Syntax:
@@ -60,7 +60,7 @@ end
 
 % check for intersection
 %bound = supportFunc_(S,hs.c,'lower','interval',8,1e-3);
-bound = supportFunc_(S, hs.c, 'lower', 'split', splits);
+[bound, mem] = supportFunc_(S, hs.c, 'lower', 'split', splits);
 res = bound <= hs.d;
 
 % ------------------------------ END OF CODE ------------------------------
