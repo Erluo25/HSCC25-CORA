@@ -20,7 +20,7 @@ for i = 1:1348
     GI = GI_data.GI;
     % Create the PolyZonotope object pZ
     pZ = polyZonotope(c, G, GI, 2.*E);
-    plot(pZ, [1, 2], 'Splits', 8);
+    plot(pZ, [1, 2], 'Splits', 30);
     % Define c1 and c2 satisfying the conditions
     % c1 = [1, 0];
     % c2 = [0, 1];
