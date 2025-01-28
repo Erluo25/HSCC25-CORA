@@ -1,5 +1,4 @@
 % Initialize the folder path containing the .mat files
-folderPath = 'laubLoomis';
 folderPath = 'VanDelPol';
 
 figure; hold on;
@@ -20,22 +19,7 @@ for i = 1:1348
     GI = GI_data.GI;
     % Create the PolyZonotope object pZ
     pZ = polyZonotope(c, G, GI, 2.*E);
-    plot(pZ, [1, 2], 'Splits', 30);
-    % Define c1 and c2 satisfying the conditions
-    % c1 = [1, 0];
-    % c2 = [0, 1];
-    
-    % Define b (assuming a sample value for b; this should be provided based on your use case)
-    %b = -2.138; % Modify as necessary for specific cases
-    
-    % Create the halfspace object hs1
-    %hs1 = halfspace([-1, 0], b);
-    
-    % Check intersection
-    %a = isIntersecting_(pZ, hs1, 'approx');
-    %if a== 1
-    %    break;
-    %end
+    plot(pZ, [1, 2],'b', 'Splits', 10);
 end
 
 % Measure total elapsed time
@@ -43,3 +27,40 @@ total_time = toc(total_tic);
 
 % Display the total elapsed time
 fprintf('Total elapsed time for all cases: %.4f seconds\n', total_time);
+
+% Plot all the halfspaces and save the zoomed figures.
+dirs = {
+    [1, 0];
+    [-1, 0];
+    [0, 1];
+    [0, -1];
+};
+bs = {
+    -2.0165;
+    -2.138;
+    -2.73;
+    -2.804;
+};
+exp_num = length(dirs);
+
+for i=1:exp_num
+    hs = halfspace(dirs{i}, bs{i});
+    plot(hs, [1, 2], 'r');
+end
+
+
+% Save the original figure
+saveas(gcf, 'Figure4.png');
+
+% Zoom into the left
+xlim([-2.05,-1.94]);
+ylim([-0.2,0.2]);
+saveas(gcf, 'Figure4-leftzoom.png');
+
+
+% Zoom into the right
+xlim([2.132, 2.15]);
+ylim([-0.08, 0.1]);
+saveas(gcf, 'Figure4-rightzoom.png');
+
+close(gcf);
