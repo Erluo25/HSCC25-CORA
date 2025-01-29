@@ -19,7 +19,7 @@ for i = 1:1348
     GI = GI_data.GI;
     % Create the PolyZonotope object pZ
     pZ = polyZonotope(c, G, GI, 2.*E);
-    plot(pZ, [1, 2],'b', 'Splits', 10);
+    plot(pZ, [1, 2],'b', 'Splits', 7);
 end
 
 % Measure total elapsed time
@@ -49,18 +49,3 @@ for i=1:exp_num
 end
 
 
-% Save the original figure
-saveas(gcf, 'Figure4.png');
-
-% Zoom into the left
-xlim([-2.05,-1.94]);
-ylim([-0.2,0.2]);
-saveas(gcf, 'Figure4-leftzoom.png');
-
-
-% Zoom into the right
-xlim([2.132, 2.15]);
-ylim([-0.08, 0.1]);
-saveas(gcf, 'Figure4-rightzoom.png');
-
-close(gcf);

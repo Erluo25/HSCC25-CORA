@@ -18,8 +18,8 @@ ylim([-0.2,0.2]);
 saveas(gcf, 'Figure4-leftzoom.png');
 
 % Zoom into the right
-xlim([2.132, 2.15]);
-ylim([-0.08, 0.1]);
+xlim([2.135, 2.141]);
+ylim([-0.06, 0.06]);
 saveas(gcf, 'Figure4-rightzoom.png');
 
 close(gcf);
