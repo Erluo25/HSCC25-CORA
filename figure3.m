@@ -2,7 +2,7 @@
 pZ = polyZonotope([0;0], [-2 -1 2; 0 -2 2], [0;0], [2 0 2; 0 2 6]);
 
 % Define the split values to iterate over (one can try [6, 7] as well)
-split_values = [0, 1, 2];
+split_values = [0, 1, 2, 3];
 
 % Define the ground truth split value
 ground_truth_split = 13;
