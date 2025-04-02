@@ -36,7 +36,8 @@ function results = exp_depz_intersect(start_idx, end_idx, exps, dataset, print_f
             max_depth = exp_info{3};
             
             % Define the interval bounds.
-            a = zeros(1, alpha_size);
+            %a = zeros(1, alpha_size);
+            a = -1*ones(1, alpha_size);
             b = ones(1, alpha_size);
             
             % Prepare the adjusted vector and value.
@@ -51,7 +52,7 @@ function results = exp_depz_intersect(start_idx, end_idx, exps, dataset, print_f
             % Time the intersection checking.
             tStart = tic;
             check_result = depz_intersection(G, a, b, E, c, b_val, adjusted_vector, adjusted_value, ...
-                                             mem_track, 0, max_depth, -1, 1e-7);
+                                             mem_track, 0, max_depth, 1, true, 1e-7);
             time_usage = toc(tStart);
             
             if print_flag
@@ -77,7 +78,7 @@ function results = exp_depz_intersect(start_idx, end_idx, exps, dataset, print_f
     end
 end
 
-
+%{
 function [beta_min, beta_max] = overapprox_depz(G, a, b, E)
     % a and b are assumed to be 1×n row vectors.
     % E is an m×n matrix so that a.^E broadcasts to an m×n matrix.
@@ -86,7 +87,31 @@ function [beta_min, beta_max] = overapprox_depz(G, a, b, E)
     beta_min = prod(a_exp, 2);  % Product along each row.
     beta_max = prod(b_exp, 2);
 end
+%}
 
+
+function [beta_min, beta_max] = overapprox_depz(G, a, b, E)
+    % a, b are row vectors 
+    %disp('hi')
+    a_exp = a .^ E;  
+    b_exp = b .^ E;
+    beta_min = min(a_exp(:,1), b_exp(:,1));
+    beta_max = max(a_exp(:,1), b_exp(:,1));
+    if a(1)*b(1) < 0
+        beta_min = min(beta_min,0);
+        beta_max = max(beta_max,0);
+    end
+    for i = 2:size(a_exp,2)
+        candidates = [a_exp(:,i) .* beta_min, a_exp(:,i) .* beta_max, ...
+                      b_exp(:,i) .* beta_min, b_exp(:,i) .* beta_max];
+        beta_min = min(candidates, [], 2);
+        beta_max = max(candidates, [], 2);
+        if a(i)*b(i) < 0
+            beta_min = min(beta_min,0);
+            beta_max = max(beta_max,0);
+        end
+    end
+end
 
 function point = middle_point_polynomial_zonotope_with_dom(G, a, b, E, adjusted_vector, dir)
     % Compute the middle coefficients.
@@ -120,7 +145,7 @@ function point = middle_point_polynomial_zonotope_with_dom(G, a, b, E, adjusted_
     end
 end
 
-function result = depz_intersection(G, a, b, E, c, b_val, adjusted_vector, adjusted_value, mem_track, depth, max_depth, last_index, tolerance)
+function result = depz_intersection(G, a, b, E, c, b_val, adjusted_vector, adjusted_value, mem_track, depth, max_depth, split_index, repeat, tolerance)
     
     % Terminate if maximum recursion depth is exceeded.
     if depth > max_depth
@@ -148,8 +173,12 @@ function result = depz_intersection(G, a, b, E, c, b_val, adjusted_vector, adjus
     % (Python code uses: split_index = (last_index+1) % length(a) with 0-based indexing.
     % Here we simulate that by computing a “python index” then converting to MATLAB’s 1-based index.)
     n = length(a);
-    python_index = mod(last_index + 1, n);  % Value in 0..(n-1)
-    split_index = python_index + 1;         % Convert to MATLAB index (1..n)
+    split_index = mod(split_index, n+1);
+    if isequal(split_index, 0)
+        split_index = 1;
+    end
+    %python_index = mod(last_index + 1, n);  % Value in 0..(n-1)
+    %split_index = python_index + 1;         % Convert to MATLAB index (1..n)
     
     % Perform the cyclic splitting.
     split_a_1 = a;
@@ -163,17 +192,28 @@ function result = depz_intersection(G, a, b, E, c, b_val, adjusted_vector, adjus
     % Update the memory tracker.
     mem_track.val = mem_track.val + (numel(split_a_1) + numel(split_b_1)) + ...
                                  (numel(split_a_2) + numel(split_b_2));
+    %{
+    if ~repeat
+        split_index = split_index + 1;
+        repeat = true;
+    else
+        split_index = split_index;
+        repeat = false;
+    end
+    %}
     
+    split_index = split_index + 1;
+
     % Recursively check the two splits.
     % Note: We pass last_index as a “python index” (i.e. MATLAB index-1).
     result_1 = depz_intersection(G, split_a_1, split_b_1, E, c, b_val, adjusted_vector, adjusted_value, ...
-                                 mem_track, depth + 1, max_depth, split_index - 1, tolerance);
+                                 mem_track, depth + 1, max_depth, split_index, repeat, tolerance);
     if isequal(result_1, true)
         result = true;
         return;
     end
     result_2 = depz_intersection(G, split_a_2, split_b_2, E, c, b_val, adjusted_vector, adjusted_value, ...
-                                 mem_track, depth + 1, max_depth, split_index - 1, tolerance);
+                                 mem_track, depth + 1, max_depth, split_index, repeat, tolerance);
     
     if isequal(result_2, true)
         result = true;
