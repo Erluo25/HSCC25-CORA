@@ -1,6 +1,12 @@
-dataset = 'laubLoomis';
+%dataset = 'laubLoomis';
+dataset = 'VanDelPol';
 start_idx = 1;
-end_idx = 2000;
+end_idx = 1348;
+% Try out unsquared depz
+exp_info = {[1, 0], -2.026, 40};
+exp_info = {[-1, 0], -2.143, 40};
+exp_info = {[0, 1], -2.71, 40};
+exp_info = {[0, -1], -2.79, 40};
 
 % Experiment for depz ==================================
 %exp_info = {[1, 0], -2.0165, 40};
@@ -8,6 +14,7 @@ end_idx = 2000;
 %exp_info = {[0, 1], -2.73, 40};
 %exp_info = {[0, -1], -2.804, 40};
 % Laub stuff========================
+%{
 dirs = {
     [0, 0, 0, 0, 0, 0, 1]; 
     [0, 0, 0, 0, 1, 0, 0];
@@ -25,7 +32,8 @@ bs = {
     0.045;
 };
 k = 6;
-exp_info = {dirs{k}, bs{k}, 40};
+exp_info = {dirs{k}, bs{k}, 40};\
+%}
 % Laub stuff========================
 
 
@@ -93,7 +101,7 @@ function [G, E, center, GI, alpha_size] = preprocess_data(file_path_E, file_path
     % Load and process matrix E.
     tmp = load(file_path_E);
     E = tmp.E';
-    E = 2 .* E; 
+    %E = 2 .* E; 
     %{
     [~, factor_num] = size(E);
     selected_factor_num = min(factor_num, 10);
