@@ -1,13 +1,4 @@
 function [i, a] = exp_intersect(folderPath, case_num, dir, b, splits)
-% Initialize the folder path containing the .mat files
-%folderPath = 'laubLoomis';
-%folderPath = 'VanDelPol';
-%folderPath = folderPath;
-
-
-% Define b and c
-%dir = [0, 0, 0, 0, 1, 0, 0];
-%b = 0.0685; % Modify as necessary for specific cases
 disp(['dir: ', num2str(dir), ' b: ', num2str(b), ' splits:', num2str(splits)]);
 
 % Start timing the entire process
@@ -26,7 +17,8 @@ for i = 1:case_num
     c = c_data.c;
     GI = GI_data.GI;
     % Create the PolyZonotope object pZ
-    pZ = polyZonotope(c, G, GI, 2.*E);
+    %pZ = polyZonotope(c, G, GI, 2.*E);
+    pZ = polyZonotope(c, G, GI, E);
     
     % Create the halfspace object hs1
     hs1 = halfspace(dir, b);

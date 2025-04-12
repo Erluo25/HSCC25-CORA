@@ -1,0 +1,15 @@
+time out is: 900 seconds
+Starting parallel pool (parpool) using the 'Processes' profile ...
+Connected to parallel pool with 10 workers.
+Intersection checking completed for exp: 1, with time: 48.1315 seconds, with i: 95, with check result a: 1, dir: [0 0 0 0 0 0 1] , b: 0.1125, split num: 12 
+Intersection checking cancelled for exp: 2, with time: 900.931 seconds, dir: [0 0 0 0 0 0 1] , b: 0.1125, split num: 13
+Intersection checking completed for exp: 3, with time: 468.2906 seconds, with i: 500, with check result a: 1, dir: [0 0 0 0 1 0 0] , b: 0.062, split num: 8 
+Intersection checking cancelled for exp: 4, with time: 901.007 seconds, dir: [0 0 0 0 1 0 0] , b: 0.062, split num: 9
+Intersection checking cancelled for exp: 5, with time: 901.0088 seconds, dir: [1 0 0 0 0 0 0] , b: 0.44, split num: 12
+Intersection checking cancelled for exp: 6, with time: 901.01 seconds, dir: [1 0 0 0 0 0 0] , b: 0.44, split num: 13
+Intersection checking completed for exp: 7, with time: 113.3058 seconds, with i: 51, with check result a: 1, dir: [0 -1 0 0 0 0 0] , b: -1.3709, split num: 18 
+Intersection checking cancelled for exp: 8, with time: 901.0102 seconds, dir: [0 -1 0 0 0 0 0] , b: -1.3709, split num: 19
+Intersection checking completed for exp: 9, with time: 1.0061 seconds, with i: 1, with check result a: 1, dir: [0 0 -1 0 0 0 0] , b: -1.6503, split num: 16 
+Intersection checking cancelled for exp: 10, with time: 901.0103 seconds, dir: [0 0 -1 0 0 0 0] , b: -1.6503, split num: 17
+Intersection checking cancelled for exp: 11, with time: 901.0149 seconds, dir: [0 0 0 0 0 1 0] , b: -0.0501, split num: 11
+Intersection checking cancelled for exp: 12, with time: 901.0203 seconds, dir: [0 0 0 0 0 1 0] , b: -0.0501, split num: 12

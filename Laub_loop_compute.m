@@ -1,6 +1,6 @@
 % Initialize the folder path containing the .mat files
 folderPath = 'laubLoomis';
-
+%{
 dirs = {
     [0, 0, 0, 0, 0, 0, 1]; 
     [0, 0, 0, 0, 1, 0, 0];
@@ -17,7 +17,31 @@ bs = {
     -1.6505;
     0.045;
 };
-split = 3;
+%}
+dirs = {[0, 0, 0, 0, 0, 0, 1]};
+bs = {0.1125};
+split = 13;
+
+dirs = {[0, 0, 0, 0, 1, 0, 0]};
+bs = {0.062};
+split = 8; %10;
+
+dirs = {[1, 0, 0, 0, 0, 0, 0]};
+bs = {0.44};
+split = 13; %TBD
+
+dirs = {[0, -1, 0, 0, 0, 0, 0]};
+bs = {-1.3709};
+split = 19; 
+
+dirs = {[0, 0, -1, 0, 0, 0, 0]};
+bs = {-1.65031};
+split =17; 
+
+dirs = {[0, 0, 0, 0, 0, 1, 0]};
+bs = {-0.0501;};
+split =11; 
+
 start_idx = 1;
 end_idx = 2000;
 exp_num = length(dirs);
@@ -36,7 +60,8 @@ for i = start_idx:end_idx
     c = c_data.c;
     GI = GI_data.GI;
     % Create the PolyZonotope object pZ
-    pZ = polyZonotope(c, G, GI, 2.*E);
+    %pZ = polyZonotope(c, G, GI, 2.*E);
+    pZ = polyZonotope(c, G, GI, E);
     init_mem = (size(G,1)*size(G, 2)) + (size(E,1)*size(E, 2)) + (size(GI,1)*size(GI, 2));
     for j = 1:exp_num
         dir = dirs{j};
@@ -48,7 +73,8 @@ for i = start_idx:end_idx
         start_time = tic;
         [a, mem] = isIntersecting_(pZ, hs1, 'approx', split);
         tComp = toc(start_time);
-        fprintf("Set %d, Exp %d, has time %s, memory %s\n", i, j, num2str(tComp), num2str(init_mem + mem));
+        assert(isequal(a, 0));
+        fprintf("Set %d, Exp %d, intersects %d, has time %s, memory %s\n", i, j, a, num2str(tComp), num2str(init_mem + mem));
         result_mat(i, j, 1) = tComp;
         result_mat(i, j, 2) = init_mem + mem;
     end
@@ -56,4 +82,4 @@ for i = start_idx:end_idx
 end
 
 % Save the result_mat
-save('cora_laub_mem_time.mat', 'result_mat');
+%save('cora_laub_mem_time.mat', 'result_mat');
