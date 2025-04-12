@@ -18,7 +18,11 @@ for i = 1:1348
     c = c_data.c;
     GI = GI_data.GI;
     % Create the PolyZonotope object pZ
-    pZ = polyZonotope(c, G, GI, 2.*E);
+    %pZ = polyZonotope(c, G, GI, 2.*E);
+    [factor_num, ~] = size(E);
+    selected_factor_num = min(factor_num, 10);
+    E = 31 * E(1:selected_factor_num, :);
+    pZ = polyZonotope(c, G, GI, E);
     plot(pZ, [1, 2],'b', 'Splits', 7);
 end
 
@@ -45,7 +49,7 @@ exp_num = length(dirs);
 
 for i=1:exp_num
     hs = halfspace(dirs{i}, bs{i});
-    plot(hs, [1, 2], 'r');
+    %plot(hs, [1, 2], 'r');
 end
 
 
