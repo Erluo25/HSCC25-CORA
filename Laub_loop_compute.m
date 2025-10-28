@@ -1,6 +1,6 @@
 % Initialize the folder path containing the .mat files
 folderPath = 'laubLoomis';
-%{
+
 dirs = {
     [0, 0, 0, 0, 0, 0, 1]; 
     [0, 0, 0, 0, 1, 0, 0];
@@ -17,30 +17,60 @@ bs = {
     -1.6505;
     0.045;
 };
+split = 40;
 %}
-dirs = {[0, 0, 0, 0, 0, 0, 1]};
-bs = {0.1125};
-split = 13;
 
-dirs = {[0, 0, 0, 0, 1, 0, 0]};
-bs = {0.062};
-split = 8; %10;
+% 31 cases =======================
+%{
+dirs = {
+    [0, 0, 0, 0, 0, 0, 1];
+};
+bs = {
+    0.105; 
+};
+split = 10;
 
-dirs = {[1, 0, 0, 0, 0, 0, 0]};
-bs = {0.44};
-split = 13; %TBD
+dirs = { 
+    [0, 0, 0, 0, 1, 0, 0];
+};
+bs = {
+    0.06;
+};
+split = 10;
 
-dirs = {[0, -1, 0, 0, 0, 0, 0]};
-bs = {-1.3709};
-split = 19; 
+dirs = {
+    [1, 0, 0, 0, 0, 0, 0];
+};
+bs = {
+    0.44;
+};
+split = 10;
 
-dirs = {[0, 0, -1, 0, 0, 0, 0]};
-bs = {-1.65031};
-split =17; 
 
-dirs = {[0, 0, 0, 0, 0, 1, 0]};
-bs = {-0.0501;};
-split =11; 
+dirs = {
+    [0, -1, 0, 0, 0, 0, 0];
+};
+bs = {
+    -1.373;
+};
+split = 40;
+
+dirs = {
+    [0, 0, -1, 0, 0, 0, 0];
+};
+bs = {
+    -1.6508;
+};
+split = 40;
+
+dirs = {
+    [0, 0, 0, 0, 0, 1, 0];
+};
+bs = {
+    -0.0501;
+};
+split = 40;
+%}
 
 start_idx = 1;
 end_idx = 2000;
@@ -60,8 +90,8 @@ for i = start_idx:end_idx
     c = c_data.c;
     GI = GI_data.GI;
     % Create the PolyZonotope object pZ
-    %pZ = polyZonotope(c, G, GI, 2.*E);
-    pZ = polyZonotope(c, G, GI, E);
+    pZ = polyZonotope(c, G, GI, 2.*E);
+    %pZ = polyZonotope(c, G, GI, 31.*E);
     init_mem = (size(G,1)*size(G, 2)) + (size(E,1)*size(E, 2)) + (size(GI,1)*size(GI, 2));
     for j = 1:exp_num
         dir = dirs{j};
@@ -71,14 +101,21 @@ for i = start_idx:end_idx
         
         % Check intersection
         start_time = tic;
-        [a, mem] = isIntersecting_(pZ, hs1, 'approx', split);
+        %[a, mem] = isIntersecting_(pZ, hs1, 'approx', split);
+        [a, mem] = improved_benchmark(pZ, hs1, split);
         tComp = toc(start_time);
         assert(isequal(a, 0));
         fprintf("Set %d, Exp %d, intersects %d, has time %s, memory %s\n", i, j, a, num2str(tComp), num2str(init_mem + mem));
         result_mat(i, j, 1) = tComp;
         result_mat(i, j, 2) = init_mem + mem;
     end
-    
+end
+
+% Print out the results
+total_time_per_exp = sum(result_mat(:, :, 1), 1);
+for j=1:exp_num
+    fprintf("For exp: %d, with dir: %s , b: %s has time: %.1f seconds\n", ...
+        j, mat2str(dirs{j}), num2str(bs{j}), total_time_per_exp(j));
 end
 
 % Save the result_mat

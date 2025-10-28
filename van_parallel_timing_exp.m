@@ -9,7 +9,8 @@ if isempty(gcp('nocreate'))
     parpool;
 end
 
-% Set up the experiments
+% Set up the experiments squared case
+%{
 dirs = {
     [1, 0];
     [-1, 0];
@@ -28,6 +29,30 @@ split_list = {
    3;
    2;
 };
+%}
+
+% Set up the experiments of 31 degree cases
+dirs = {
+    [1, 0];
+    [-1, 0];
+    [0, 1];
+    [0, -1];
+};
+
+bs = {
+    -2.02594;
+    -2.13816;
+    -2.7183;
+    -2.814;
+};
+
+split_list = {
+   40;
+   40;
+   40;
+   40;
+};
+
 assert((length(dirs) == length(bs)) && (length(bs) == length(split_list)), ...
     'invalid input lengths')
 
@@ -74,16 +99,16 @@ while ~all(isJobFinished)
             % Fetch the result if completed
             [idx, a] = fetchOutputs(futures(i));
             resultCell{i} = sprintf("Intersection checking completed for exp: %d, with time: %s seconds, " + ...
-                "with i: %d, with check result a: %d, dir: %s , b: %s, split num: %d \n", ...
-                i, num2str(elapsedTime), idx, a, mat2str(dirs{i}), num2str(bs{i}), split_list{i});
+                "with i: %d, with check result a: %d, dir: %s , b: %.6f, split num: %d \n", ...
+                i, num2str(elapsedTime), idx, a, mat2str(dirs{i}), bs{i}, split_list{i});
             isJobFinished(i) = true;  % Mark this job as finished
             
         elseif elapsedTime > timeout
             % Cancel the job if it exceeds the timeout
             cancel(futures(i));
             resultCell{i} = sprintf("Intersection checking cancelled for exp: %d, " + ...
-                "with time: %s seconds, dir: %s , b: %s, split num: %d\n", ...
-                i, num2str(elapsedTime), mat2str(dirs{i}), num2str(bs{i}), split_list{i});
+                "with time: %s seconds, dir: %s , b: %.6f, split num: %d\n", ...
+                i, num2str(elapsedTime), mat2str(dirs{i}), bs{i}, split_list{i});
             isJobFinished(i) = true;  % Mark this job as finished
         end
     end

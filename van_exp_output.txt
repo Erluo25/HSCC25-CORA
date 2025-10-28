@@ -1,0 +1,12 @@
+time out is: 900 seconds
+Starting parallel pool (parpool) using the 'Processes' profile ...
+Connected to parallel pool with 10 workers.
+Intersection checking completed for exp: 1, with time: 157.1096 seconds, with i: 1348, with check result a: 0, dir: [1 0] , b: -2.0165, split num: 10 
+Intersection checking completed for exp: 2, with time: 67.0803 seconds, with i: 1348, with check result a: 0, dir: [-1 0] , b: -2.138, split num: 6 
+Intersection checking completed for exp: 3, with time: 22.0572 seconds, with i: 1348, with check result a: 0, dir: [0 1] , b: -2.73, split num: 3 
+Intersection checking completed for exp: 4, with time: 17.0431 seconds, with i: 1348, with check result a: 0, dir: [0 -1] , b: -2.804, split num: 2 
+time out is: 900 seconds
+Intersection checking cancelled for exp: 1, with time: 900.4198 seconds, dir: [1 0] , b: -2.0259, split num: 40
+Intersection checking completed for exp: 2, with time: 24.0267 seconds, with i: 1348, with check result a: 0, dir: [-1 0] , b: -2.1382, split num: 40 
+Intersection checking cancelled for exp: 3, with time: 900.4285 seconds, dir: [0 1] , b: -2.7183, split num: 40
+Intersection checking cancelled for exp: 4, with time: 900.4295 seconds, dir: [0 -1] , b: -2.814, split num: 40

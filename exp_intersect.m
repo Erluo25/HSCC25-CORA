@@ -12,19 +12,20 @@ for i = 1:case_num
     c_data = load(fullfile(folderPath, sprintf('c_interval_%d.mat', i)));
     GI_data = load(fullfile(folderPath, sprintf('GI_interval_%d.mat', i)));
     % Extract G and E from loaded data (assuming they are stored with known variable names)
-    G = G_data.G;  % Adjust if the variable name inside the file is different
-    E = E_data.E;  % Adjust if the variable name inside the file is different
+    G = G_data.G;  
+    E = E_data.E; 
     c = c_data.c;
     GI = GI_data.GI;
     % Create the PolyZonotope object pZ
     %pZ = polyZonotope(c, G, GI, 2.*E);
-    pZ = polyZonotope(c, G, GI, E);
+    pZ = polyZonotope(c, G, GI, 31.*E);
     
     % Create the halfspace object hs1
     hs1 = halfspace(dir, b);
     
     % Check intersection
-    a = isIntersecting_(pZ, hs1, 'approx', splits);
+    %a = isIntersecting_(pZ, hs1, 'approx', splits);
+    [a, mem] = improved_benchmark(pZ, hs1, splits);
     if a == 1
         break;
     end

@@ -1,18 +1,7 @@
+%{
 dataset = 'laubLoomis';
-%dataset = 'VanDelPol';
 start_idx = 1;
 end_idx = 2000;
-% Try out unsquared van
-%exp_info = {[1, 0], -2.026, 40};
-%exp_info = {[-1, 0], -2.143, 40};
-%exp_info = {[0, 1], -2.71, 40};
-%exp_info = {[0, -1], -2.79, 40};
-
-% Experiment for depz ==================================
-%exp_info = {[1, 0], -2.0165, 40};
-%exp_info = {[-1, 0], -2.138, 40};
-%exp_info = {[0, 1], -2.73, 40};
-%exp_info = {[0, -1], -2.804, 40};
 % Squared Laub stuff========================
 %{
 dirs = {
@@ -24,16 +13,16 @@ dirs = {
     [0, 0, 0, 0, 0, 1, 0];
 };
 bs = {
-    0.138; 
+    0.137; 
     0.0685; 
     0.457;
     -1.354;
     -1.6505;
     0.045;
 };
-k = 1;
-exp_info = {dirs{k}, bs{k}, 40};
 %}
+% 31 Cases ============================
+%{
 dirs = {
     [0, 0, 0, 0, 0, 0, 1]; 
     [0, 0, 0, 0, 1, 0, 0];
@@ -43,19 +32,55 @@ dirs = {
     [0, 0, 0, 0, 0, 1, 0];
 };
 bs = {
-    0.1125; 
-    0.062; 
+    0.105;
+    0.06;
     0.44;
-    -1.3709;
-    -1.65031;
+    -1.373;
+    -1.6508;
     -0.0501;
 };
-k = 6;
-exp_info = {dirs{k}, bs{k}, 40};
-% Laub stuff========================
+%}
+%}
+%===========================================
+%
+dataset = 'VanDelPol';
+start_idx = 1;
+end_idx = 1348;
+% 31 degree raised van ==========================
+%
+dirs = {
+    [1, 0];
+    [-1, 0];
+    [0, 1];
+    [0, -1];
+};
 
+bs = {
+    -2.02594;
+    -2.13816;
+    -2.7183;
+    -2.814;
+};
+%}
+% Experiment for squared van ==================================
+%{
+dirs = {
+    [1, 0];
+    [-1, 0];
+    [0, 1];
+    [0, -1];
+};
 
-cum_time = 0;
+bs = {
+    -2.0165;
+    -2.138;
+    -2.73;
+    -2.804;
+};
+%}
+%}
+exp_num = length(dirs);
+result_mat = zeros(end_idx, exp_num, 2); % first store time, second store memory
 for i = start_idx:end_idx
     file_path_E  = fullfile(dataset, sprintf('E_interval_%d.mat', i));
     file_path_G  = fullfile(dataset, sprintf('G_interval_%d.mat', i));
@@ -63,29 +88,38 @@ for i = start_idx:end_idx
     file_path_GI = fullfile(dataset, sprintf('GI_interval_%d.mat', i));
     [G, E, center, GI, alpha_size] = preprocess_data(file_path_E, file_path_G, file_path_c, file_path_GI);
     
-    % Make up the direction and initialzied info
-    [a, b, adjusted_vector, adjusted_value, c, b_val, max_depth] = prepare_problem(exp_info, alpha_size, GI, center);
-    init_mem = numel(G) + numel(E) + numel(GI);
-    mem_track.val = init_mem;
-    
-    % Time the intersection checking.
-    tStart = tic;
-    check_result = depz_intersection(G, a, b, E, c, b_val, adjusted_vector, adjusted_value, ...
-                                     mem_track, 0, max_depth);
-    time_usage = toc(tStart);
-    cum_time = cum_time + time_usage;
-    print_result(check_result, i, time_usage);
-    %disp(["Memory usage for depz is: %s", num2str(mem_track.val)]);
+    for j = 1:exp_num
+        % Make up the direction and initialzied info
+        exp_info = {dirs{j}, bs{j}, 40};
+        [a, b, adjusted_vector, adjusted_value, c, b_val, max_depth] = prepare_problem(exp_info, alpha_size, GI, center);
+        init_mem = numel(G) + numel(E) + numel(GI);
+        mem_track.val = init_mem;
+        
+        % Time the intersection checking.
+        tStart = tic;
+        check_result = depz_intersection(G, a, b, E, c, b_val, adjusted_vector, adjusted_value, ...
+                                         mem_track, 0, max_depth);
+        time_usage = toc(tStart);
+        print_result(check_result, i, j, time_usage);
+        %disp(["Memory usage for depz is: %s", num2str(mem_track.val)]);
+        result_mat(i, j, 1) = time_usage;
+        result_mat(i, j, 2) = mem_track.val;
+    end
 end
 % Note print_result will panic if there's inconclusive result or intersect
-fprintf("DEPZ time is: %d", cum_time);
+total_time_per_exp = sum(result_mat(:, :, 1), 1);
+for j=1:exp_num
+    fprintf("(DEPZ-NR)For exp: %d, with dir: %s , b: %.6f has time: %.1f seconds\n", ...
+        j, mat2str(dirs{j}), bs{j}, total_time_per_exp(j));
+end
 
 
 function [G, E, center, GI, alpha_size] = preprocess_data(file_path_E, file_path_G, file_path_c, file_path_GI)
     % Load and process matrix E.
     tmp = load(file_path_E);
     E = tmp.E';
-    
+    %E = 2* E;
+    E = 31.* E;
     % Load and process matrix G.
     tmp = load(file_path_G);
     G = tmp.G';
@@ -313,17 +347,17 @@ function [intersect, val, biggest_gen_intv_idx] = check_half_space_intersection(
     [~, biggest_gen_intv_idx] = max(upper_intv - lower_intv); 
 end
 
-function print_result(check_result, i, time_usage)
+function print_result(check_result, i, j, time_usage)
     time_str = sprintf(' Time usage is: %fs.', time_usage);
     if isequal(check_result, true)
-        fprintf('Case %d: Intersection found with the hyperplane.%s\n', i, time_str);
-        error_mesg = sprintf('Case %d: Intersection found with the hyperplane.%s\n', i, time_str);
+        fprintf('Case %d, Exp %d: Intersection found with the hyperplane.%s\n', i, j, time_str);
+        error_mesg = sprintf('Case %d, Exp %d: Intersection found with the hyperplane.%s\n', i, j, time_str);
         assert(false, error_mesg);
     elseif isequal(check_result, false)
-        fprintf('Case %d: No intersection found.%s\n', i, time_str);
+        fprintf('Case %d, Exp %d: No intersection found.%s\n', i, j, time_str);
     elseif isempty(check_result)
-        fprintf('Case %d: Inconclusive result - reached maximum recursion depth.%s\n', i, time_str);
-        error_mesg = sprintf('Case %d: Inconclusive result - reached maximum recursion depth.%s\n', i, time_str);
+        fprintf('Case %d, Exp %d: Inconclusive result - reached maximum recursion depth.%s\n', i, j, time_str);
+        error_mesg = sprintf('Case %d, Exp %d: Inconclusive result - reached maximum recursion depth.%s\n', i, j, time_str);
         assert(false, error_mesg);
     end
 end
