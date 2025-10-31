@@ -14,9 +14,11 @@ bs = {
     -2.804;
 };
 split = 40;
+power_case = 2;
 %}
 
 % 31 degree
+power_case = 31;
 %{
 dirs = {
     [1, 0];
@@ -24,8 +26,9 @@ dirs = {
 bs = {
     -2.02594;
 };
-split = 11;
+split = 40;
 %}
+%
 dirs = {
     [-1, 0];
 };
@@ -33,7 +36,7 @@ bs = {
     -2.13816;
 };
 split = 40;
-
+%}
 %{
 dirs = {
     [0, 1];
@@ -41,15 +44,17 @@ dirs = {
 bs = {
     -2.7183;
 };
-split = 12;
+split = 40;
+%}
 
+%{
 dirs = {
     [0, -1];
 };
 bs = {
      -2.814;
 };
-split = 12;
+split = 40;
 %}
 
 start_idx = 1;
@@ -71,10 +76,7 @@ for i = start_idx:end_idx
     GI = GI_data.GI;
     
     % Create the PolyZonotope object pZ
-    %pZ = polyZonotope(c, G, GI, 2.*E);
-    pZ = polyZonotope(c, G, GI, 31.*E);
-    
-    init_mem = (size(G,1)*size(G, 2)) + (size(E,1)*size(E, 2)) + (size(GI,1)*size(GI, 2));
+    pZ = polyZonotope(c, G, GI, power_case*E);
     for j = 1:exp_num
         dir = dirs{j};
         b = bs{j};
@@ -84,21 +86,22 @@ for i = start_idx:end_idx
         % Check intersection
         start_time = tic;
         %[a, mem] = isIntersecting_(pZ, hs1, 'approx', split);
-        [a, mem] = improved_benchmark(pZ, hs1, split);
+        [a, mem, density_info] = improved_benchmark(pZ, hs1, split);
         tComp = toc(start_time);
         assert(isequal(a, 0));
-        fprintf("Set %d, Exp %d, intersects %d, has time %s, memory %s\n", i, j, a, num2str(tComp), num2str(init_mem + mem));
+        fprintf("Set %d, Exp %d, intersects %d, has time %s, memory %s\n", i, j, a, num2str(tComp), num2str(mem));
         result_mat(i, j, 1) = tComp;
-        result_mat(i, j, 2) = init_mem + mem;
+        result_mat(i, j, 2) = mem;
     end
     
 end
 
 % Print out the results
 total_time_per_exp = sum(result_mat(:, :, 1), 1);
+max_memory_per_exp = max(result_mat(:, :, 2), [], 1);
 for j=1:exp_num
-    fprintf("For exp: %d, with dir: %s , b: %s has time: %.1f seconds\n", ...
-        j, mat2str(dirs{j}), num2str(bs{j}), total_time_per_exp(j));
+    fprintf("For exp: %d, with dir: %s , b: %s has time: %.1f seconds and max memory over cases: %.2e\n", ...
+        j, mat2str(dirs{j}), num2str(bs{j}), total_time_per_exp(j), max_memory_per_exp(j));
 end
 
 % Save the result_mat

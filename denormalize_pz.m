@@ -1,4 +1,4 @@
-%{
+%
 dataset = 'laubLoomis';
 start_idx = 1;
 end_idx = 2000;
@@ -20,9 +20,10 @@ bs = {
     -1.6505;
     0.045;
 };
+power_case = 2;
 %}
 % 31 Cases ============================
-%{
+%
 dirs = {
     [0, 0, 0, 0, 0, 0, 1]; 
     [0, 0, 0, 0, 1, 0, 0];
@@ -39,15 +40,16 @@ bs = {
     -1.6508;
     -0.0501;
 };
+power_case = 31;
 %}
 %}
 %===========================================
-%
+%{
 dataset = 'VanDelPol';
 start_idx = 1;
 end_idx = 1348;
 % 31 degree raised van ==========================
-%
+%{
 dirs = {
     [1, 0];
     [-1, 0];
@@ -61,6 +63,7 @@ bs = {
     -2.7183;
     -2.814;
 };
+power_case = 31;
 %}
 % Experiment for squared van ==================================
 %{
@@ -77,49 +80,79 @@ bs = {
     -2.73;
     -2.804;
 };
+power_case = 2;
 %}
 %}
+
+% Some general parameters setup
 exp_num = length(dirs);
-result_mat = zeros(end_idx, exp_num, 2); % first store time, second store memory
+split_order = 40;
+
+% first store time, second store memory, thrid store init_density, forth
+% store max_density
+result_mat = nan(end_idx, exp_num, 4); 
+
 for i = start_idx:end_idx
     file_path_E  = fullfile(dataset, sprintf('E_interval_%d.mat', i));
     file_path_G  = fullfile(dataset, sprintf('G_interval_%d.mat', i));
     file_path_c  = fullfile(dataset, sprintf('c_interval_%d.mat', i));
     file_path_GI = fullfile(dataset, sprintf('GI_interval_%d.mat', i));
-    [G, E, center, GI, alpha_size] = preprocess_data(file_path_E, file_path_G, file_path_c, file_path_GI);
+    [G, E, center, GI, alpha_size] = preprocess_data(file_path_E, file_path_G, file_path_c, file_path_GI, power_case);
     
     for j = 1:exp_num
         % Make up the direction and initialzied info
-        exp_info = {dirs{j}, bs{j}, 40};
+        exp_info = {dirs{j}, bs{j}, split_order};
         [a, b, adjusted_vector, adjusted_value, c, b_val, max_depth] = prepare_problem(exp_info, alpha_size, GI, center);
+        
+        % Record the memeory and density of the pZ
         init_mem = numel(G) + numel(E) + numel(GI);
-        mem_track.val = init_mem;
+        mem_track = MemTracker(init_mem);
+
+        [~, temp_density] = size(E);
+        density_info = DensityInfo(temp_density);
         
         % Time the intersection checking.
         tStart = tic;
         check_result = depz_intersection(G, a, b, E, c, b_val, adjusted_vector, adjusted_value, ...
-                                         mem_track, 0, max_depth);
+                                         mem_track, 0, max_depth, density_info);
         time_usage = toc(tStart);
-        print_result(check_result, i, j, time_usage);
-        %disp(["Memory usage for depz is: %s", num2str(mem_track.val)]);
+        print_result(check_result, i, j, time_usage, mem_track);
         result_mat(i, j, 1) = time_usage;
-        result_mat(i, j, 2) = mem_track.val;
+        result_mat(i, j, 2) = mem_track.get();
+        result_mat(i, j, 3) = density_info.get_init();
+        result_mat(i, j, 4) = density_info.get_max();
     end
 end
 % Note print_result will panic if there's inconclusive result or intersect
-total_time_per_exp = sum(result_mat(:, :, 1), 1);
+total_time_per_exp = sum(result_mat(:, :, 1), 1, 'omitnan');
+max_memory_per_exp = max(result_mat(:, :, 2), [], 1, 'omitnan');
+%{
+min_init_density_over_sets = min(result_mat(:, :, 3), [], 1, 'omitnan');
+max_init_density_over_sets = max(result_mat(:, :, 3), [], 1, 'omitnan');
+mean_init_density_over_sets = mean(result_mat(:, :, 3), 1, 'omitnan');
+min_max_density_over_sets = min(result_mat(:, :, 4), [], 1, 'omitnan');
+max_max_density_over_sets = max(result_mat(:, :, 4), [], 1, 'omitnan');
+mean_max_density_over_sets = mean(result_mat(:, :, 4), 1, 'omitnan');
+%}
+
 for j=1:exp_num
-    fprintf("(DEPZ-NR)For exp: %d, with dir: %s , b: %.6f has time: %.1f seconds\n", ...
-        j, mat2str(dirs{j}), bs{j}, total_time_per_exp(j));
+    fprintf("(DEPZ-NR)For exp: %d, with dir: %s , b: %.6f has time: %.1f seconds and max memory over cases: %.2e\n\n", ...
+        j, mat2str(dirs{j}), bs{j}, total_time_per_exp(j), max_memory_per_exp(j));
+    %{
+    fprintf("Density info: min_init_d: %d, max_init_d: %d, mean_init_d: %.4f," + ...
+        " min_max_d: %d, max_max_d: %d, mean_max_d: %.4f\n\n",...
+        min_init_density_over_sets(j), max_init_density_over_sets(j), mean_init_density_over_sets(j),...
+        min_max_density_over_sets(j), max_max_density_over_sets(j), mean_max_density_over_sets(j));
+    %}
 end
 
 
-function [G, E, center, GI, alpha_size] = preprocess_data(file_path_E, file_path_G, file_path_c, file_path_GI)
+function [G, E, center, GI, alpha_size] = preprocess_data(file_path_E, file_path_G, file_path_c, file_path_GI, power_case)
     % Load and process matrix E.
     tmp = load(file_path_E);
     E = tmp.E';
-    %E = 2* E;
-    E = 31.* E;
+    E = power_case * E;
+    
     % Load and process matrix G.
     tmp = load(file_path_G);
     G = tmp.G';
@@ -235,7 +268,7 @@ function point = middle_point_polynomial_zonotope_with_dom(G, a, b, E, adjusted_
 end
 
 
-function result = depz_intersection(G, a, b, E, c, b_val, adjusted_vector, adjusted_value, mem_track, depth, max_depth)
+function result = depz_intersection(G, a, b, E, c, b_val, adjusted_vector, adjusted_value, mem_track, depth, max_depth, density_info)
     
     % Terminate if maximum recursion depth is exceeded.
     if depth > max_depth
@@ -285,20 +318,25 @@ function result = depz_intersection(G, a, b, E, c, b_val, adjusted_vector, adjus
     split_b_2 = b;
     split_a_2(split_index) = (a(split_index) + b(split_index)) / 2;
     
-    % Update the memory tracker.
-    mem_track.val = mem_track.val + (numel(split_a_1) + numel(split_b_1)) + ...
-                                 (numel(split_a_2) + numel(split_b_2));
+    % Update the memory tracker and density (though density will remain constant, still tracking).
+    new_mem_usage = (numel(split_a_1) + numel(split_b_1)) + (numel(split_a_2) + numel(split_b_2));
+    mem_track.add(new_mem_usage);
 
+    [~, temp_density] = size(E);
+    new_max_density = max(density_info.get_max(), temp_density);
+    density_info.update_max(new_max_density);
+    
+    
     % Recursively check the two splits.
     result_1 = depz_intersection(G, split_a_1, split_b_1, E, c, b_val, adjusted_vector, adjusted_value, ...
-                                 mem_track, depth + 1, max_depth);
+                                 mem_track, depth + 1, max_depth, density_info);
     if (isequal(result_1, true) || isempty(result_1))
         result = result_1;
         return;
     end
     
     result_2 = depz_intersection(G, split_a_2, split_b_2, E, c, b_val, adjusted_vector, adjusted_value, ...
-                                 mem_track, depth + 1, max_depth);
+                                 mem_track, depth + 1, max_depth, density_info);
     
     if (isequal(result_2, true) || isempty(result_2))
         result = result_2;
@@ -347,8 +385,8 @@ function [intersect, val, biggest_gen_intv_idx] = check_half_space_intersection(
     [~, biggest_gen_intv_idx] = max(upper_intv - lower_intv); 
 end
 
-function print_result(check_result, i, j, time_usage)
-    time_str = sprintf(' Time usage is: %fs.', time_usage);
+function print_result(check_result, i, j, time_usage, mem_track)
+    time_str = sprintf(' Time usage is: %fs. with memory usage: %d', time_usage, mem_track.get());
     if isequal(check_result, true)
         fprintf('Case %d, Exp %d: Intersection found with the hyperplane.%s\n', i, j, time_str);
         error_mesg = sprintf('Case %d, Exp %d: Intersection found with the hyperplane.%s\n', i, j, time_str);
