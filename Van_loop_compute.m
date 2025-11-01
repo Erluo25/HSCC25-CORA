@@ -1,6 +1,6 @@
 % Initialize the folder path containing the .mat files
 folderPath = 'VanDelPol';
-%{
+%
 dirs = {
     [1, 0];
     [-1, 0];
@@ -18,7 +18,7 @@ power_case = 2;
 %}
 
 % 31 degree
-power_case = 31;
+%power_case = 31;
 %{
 dirs = {
     [1, 0];
@@ -28,7 +28,7 @@ bs = {
 };
 split = 40;
 %}
-%
+%{
 dirs = {
     [-1, 0];
 };

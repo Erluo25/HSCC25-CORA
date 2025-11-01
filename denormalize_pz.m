@@ -1,4 +1,4 @@
-%
+%{
 dataset = 'laubLoomis';
 start_idx = 1;
 end_idx = 2000;
@@ -23,7 +23,7 @@ bs = {
 power_case = 2;
 %}
 % 31 Cases ============================
-%
+%{
 dirs = {
     [0, 0, 0, 0, 0, 0, 1]; 
     [0, 0, 0, 0, 1, 0, 0];
@@ -44,7 +44,7 @@ power_case = 31;
 %}
 %}
 %===========================================
-%{
+%
 dataset = 'VanDelPol';
 start_idx = 1;
 end_idx = 1348;
@@ -66,7 +66,7 @@ bs = {
 power_case = 31;
 %}
 % Experiment for squared van ==================================
-%{
+%
 dirs = {
     [1, 0];
     [-1, 0];

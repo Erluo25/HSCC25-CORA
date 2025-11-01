@@ -1,6 +1,6 @@
 % Initialize the folder path containing the .mat files
 folderPath = 'laubLoomis';
-%{
+%
 dirs = {
     [0, 0, 0, 0, 0, 0, 1]; 
     [0, 0, 0, 0, 1, 0, 0];
@@ -22,6 +22,7 @@ power_case = 2;
 %}
 
 % 31 cases =======================
+%{
 power_case = 31;
 dirs = {
     [0, 0, -1, 0, 0, 0, 0];
@@ -32,7 +33,7 @@ bs = {
     -0.0501;
 };
 split = 40;
-
+%}
 %{
 dirs = {
     [0, 0, 0, 0, 0, 0, 1];
