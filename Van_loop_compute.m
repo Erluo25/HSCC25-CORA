@@ -1,6 +1,6 @@
 % Initialize the folder path containing the .mat files
 folderPath = 'VanDelPol';
-%
+%{
 dirs = {
     [1, 0];
     [-1, 0];
@@ -57,8 +57,8 @@ bs = {
 split = 40;
 %}
 
-start_idx = 1;
-end_idx = 1348;
+start_idx = 773; %1;
+end_idx = 773; %1348;
 exp_num = length(dirs);
 result_mat = zeros(end_idx, exp_num, 2); % first store time, second store memory
 

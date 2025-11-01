@@ -44,7 +44,7 @@ power_case = 31;
 %}
 %}
 %===========================================
-%
+%{
 dataset = 'VanDelPol';
 start_idx = 1;
 end_idx = 1348;
@@ -66,7 +66,7 @@ bs = {
 power_case = 31;
 %}
 % Experiment for squared van ==================================
-%
+%{
 dirs = {
     [1, 0];
     [-1, 0];
@@ -108,8 +108,9 @@ for i = start_idx:end_idx
         init_mem = numel(G) + numel(E) + numel(GI);
         mem_track = MemTracker(init_mem);
 
-        [~, temp_density] = size(E);
+        [temp_density, ~] = size(E);
         density_info = DensityInfo(temp_density);
+        fprintf("Init density info is: %d\n", density_info.get_init());
         
         % Time the intersection checking.
         tStart = tic;
@@ -321,11 +322,13 @@ function result = depz_intersection(G, a, b, E, c, b_val, adjusted_vector, adjus
     % Update the memory tracker and density (though density will remain constant, still tracking).
     new_mem_usage = (numel(split_a_1) + numel(split_b_1)) + (numel(split_a_2) + numel(split_b_2));
     mem_track.add(new_mem_usage);
-
-    [~, temp_density] = size(E);
-    new_max_density = max(density_info.get_max(), temp_density);
-    density_info.update_max(new_max_density);
     
+    % Update the density info
+    [temp_density, ~] = size(E);
+    if temp_density > density_info.get_max()
+        density_info.update_max(temp_density);
+        fprintf("New max density is %d\n", density_info.get_max());
+    end
     
     % Recursively check the two splits.
     result_1 = depz_intersection(G, split_a_1, split_b_1, E, c, b_val, adjusted_vector, adjusted_value, ...

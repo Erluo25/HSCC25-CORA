@@ -11,6 +11,7 @@ function [result, mem, density_info] = improved_benchmark(pZ, hs, splits)
     [~, temp_density] = size(pZ.E);
     density_info.init_density = temp_density;
     density_info.max_density = temp_density;
+    fprintf("Init density info is: %d\n",density_info.init_density);
    
     for i = 0:(splits+1)
         % preinit to avoid copying
@@ -47,7 +48,7 @@ function [result, mem, density_info] = improved_benchmark(pZ, hs, splits)
                 % Update the density information and have the print outs
                 if temp_density > density_info.max_density
                     density_info.max_density = temp_density;
-                    %fprintf("New max density is %d\n", density_info.max_density);
+                    fprintf("New max density is %d\n", density_info.max_density);
                 end
                 
                 % compute support function for enclosing zonotope
